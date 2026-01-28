@@ -4,12 +4,17 @@ import { HomeDashboard } from './components/HomeDashboard';
 import { AppLimits } from './components/AppLimits';
 import { BlockExperience } from './components/BlockExperience';
 import { FocusMode } from './components/FocusMode';
+import { TrackMode, AppTrackingSettings } from './components/TrackMode';
 import { AIInsights } from './components/AIInsights';
 import { Rewards } from './components/Rewards';
 import { Profile } from './components/Profile';
+import { Notifications } from './components/Notifications';
 import { Navigation } from './components/Navigation';
+import { supabase } from './services/SupabaseService';
+import { dataSyncService } from './services/DataSyncService';
+import { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
 
-export type Screen = 'onboarding' | 'home' | 'focus' | 'insights' | 'rewards' | 'profile' | 'limits' | 'block';
+export type Screen = 'onboarding' | 'home' | 'focus' | 'track' | 'insights' | 'rewards' | 'profile' | 'limits' | 'block' | 'notifications';
 
 export interface AppData {
   isOnboarded: boolean;
@@ -24,6 +29,7 @@ export interface AppData {
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('onboarding');
+  const [user, setUser] = useState<User | null>(null);
   const [appData, setAppData] = useState<AppData>({
     isOnboarded: false,
     selectedGoals: [],
@@ -40,6 +46,43 @@ function App() {
     minutesReclaimed: number;
   } | null>(null);
 
+  const [trackingSettings, setTrackingSettings] = useState<AppTrackingSettings>({ apps: [] });
+
+  // Supabase Auth Listener
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Sync Data when user changes
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (user) {
+        const profile = await dataSyncService.fetchProfile(user.id);
+        if (profile) {
+          setAppData({
+            isOnboarded: true,
+            selectedGoals: [], // Could be expanded
+            blockedApps: profile.blocked_apps || [],
+            dailyReclaimedMinutes: profile.daily_reclaimed_minutes || 0,
+            focusStreak: profile.focus_streak || 0,
+            totalPoints: profile.total_points || 0,
+            currentFocusSession: false,
+            aiEnabled: profile.ai_enabled ?? true,
+          });
+        }
+      }
+    };
+    loadUserData();
+  }, [user]);
+
   useEffect(() => {
     if (appData.isOnboarded && currentScreen === 'onboarding') {
       setCurrentScreen('home');
@@ -47,12 +90,17 @@ function App() {
   }, [appData.isOnboarded, currentScreen]);
 
   const completeOnboarding = (goals: string[], apps: string[]) => {
-    setAppData({
+    const newData = {
       ...appData,
       isOnboarded: true,
       selectedGoals: goals,
       blockedApps: apps,
-    });
+    };
+    setAppData(newData);
+    if (user) {
+      dataSyncService.updateProfile(user.id, newData);
+      dataSyncService.syncAppLimits(user.id, apps);
+    }
   };
 
   const showBlockScreen = (app: string, minutes: number) => {
@@ -61,7 +109,11 @@ function App() {
   };
 
   const updateAppData = (updates: Partial<AppData>) => {
-    setAppData({ ...appData, ...updates });
+    const newData = { ...appData, ...updates };
+    setAppData(newData);
+    if (user) {
+      dataSyncService.updateProfile(user.id, newData);
+    }
   };
 
   const renderScreen = () => {
@@ -72,6 +124,7 @@ function App() {
         return (
           <HomeDashboard
             data={appData}
+            user={user}
             onNavigate={setCurrentScreen}
             onBlockTriggered={showBlockScreen}
           />
@@ -98,11 +151,20 @@ function App() {
             onComplete={(minutes, points) => {
               updateAppData({
                 dailyReclaimedMinutes: appData.dailyReclaimedMinutes + minutes,
-                totalPoints: appData.totalPoints + points,
+                totalPoints: appData.totalPoints + points
               });
               setCurrentScreen('home');
             }}
             onBack={() => setCurrentScreen('home')}
+            onOpenTrackMode={() => setCurrentScreen('track')}
+          />
+        );
+      case 'track':
+        return (
+          <TrackMode
+            onBack={() => setCurrentScreen('focus')}
+            onSaveSettings={setTrackingSettings}
+            initialSettings={trackingSettings}
           />
         );
       case 'insights':
@@ -110,17 +172,19 @@ function App() {
       case 'rewards':
         return <Rewards points={appData.totalPoints} />;
       case 'profile':
-        return <Profile data={appData} onUpdateData={updateAppData} />;
+        return <Profile data={appData} user={user} onUpdateData={updateAppData} />;
+      case 'notifications':
+        return <Notifications onBack={() => setCurrentScreen('home')} />;
       default:
-        return <HomeDashboard data={appData} onNavigate={setCurrentScreen} onBlockTriggered={showBlockScreen} />;
+        return <HomeDashboard data={appData} user={user} onNavigate={setCurrentScreen} onBlockTriggered={showBlockScreen} />;
     }
   };
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-slate-50 to-blue-50 overflow-hidden flex items-center justify-center">
-      <div className="w-full h-full max-w-md mx-auto bg-white shadow-2xl relative overflow-hidden">
+    <div className="h-screen w-full bg-slate-50 overflow-hidden font-sans text-slate-900">
+      <div className="h-full w-full max-w-md mx-auto relative bg-white shadow-2xl overflow-hidden">
         {renderScreen()}
-        {appData.isOnboarded && currentScreen !== 'onboarding' && currentScreen !== 'block' && (
+        {currentScreen !== 'onboarding' && currentScreen !== 'block' && currentScreen !== 'focus' && currentScreen !== 'track' && currentScreen !== 'notifications' && (
           <Navigation currentScreen={currentScreen} onNavigate={setCurrentScreen} />
         )}
       </div>

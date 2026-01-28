@@ -1,0 +1,13 @@
+{
+	"appId": "com.reclaim.app",
+	"appName": "Reclaim",
+	"webDir": "dist",
+	"packageClassList": [
+		"AppPlugin",
+		"DevicePlugin",
+		"HapticsPlugin",
+		"CAPNetworkPlugin",
+		"PreferencesPlugin",
+		"PushNotificationsPlugin"
+	]
+}

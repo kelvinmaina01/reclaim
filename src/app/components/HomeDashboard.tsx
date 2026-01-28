@@ -1,13 +1,15 @@
-import { Play, TrendingUp, Settings, Sparkles, Clock } from 'lucide-react';
+import { Play, TrendingUp, Settings, Sparkles, Clock, Bell } from 'lucide-react';
 import type { AppData, Screen } from '../App';
+import { User } from '@supabase/supabase-js';
 
 interface HomeDashboardProps {
   data: AppData;
+  user: User | null;
   onNavigate: (screen: Screen) => void;
   onBlockTriggered: (app: string, minutes: number) => void;
 }
 
-export function HomeDashboard({ data, onNavigate, onBlockTriggered }: HomeDashboardProps) {
+export function HomeDashboard({ data, user, onNavigate, onBlockTriggered }: HomeDashboardProps) {
   const progressPercentage = Math.min((data.dailyReclaimedMinutes / 60) * 100, 100);
 
   return (
@@ -19,12 +21,21 @@ export function HomeDashboard({ data, onNavigate, onBlockTriggered }: HomeDashbo
             <p className="text-blue-100 text-sm">Good morning</p>
             <h1 className="text-2xl font-bold">Your Progress</h1>
           </div>
-          <button
-            onClick={() => onNavigate('limits')}
-            className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-colors"
-          >
-            <Settings className="w-5 h-5" />
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => onNavigate('notifications')}
+              className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-colors relative"
+            >
+              <Bell className="w-5 h-5" />
+              <div className="absolute top-2 right-2.5 w-2 h-2 bg-red-400 rounded-full border border-white/20" />
+            </button>
+            <button
+              onClick={() => onNavigate('limits')}
+              className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-colors"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Main Progress Circle */}

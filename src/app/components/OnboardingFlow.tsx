@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronRight, Sparkles, X, Check } from 'lucide-react';
 
 interface OnboardingFlowProps {
   onComplete: (goals: string[], apps: string[]) => void;
@@ -38,12 +38,26 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           <div className="absolute top-20 left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-20 right-10 w-80 h-80 bg-indigo-300/20 rounded-full blur-3xl animate-float-delayed" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-pulse-slow" />
-          
+
           {/* Content */}
           <div className="relative z-10 text-center">
             <div className="mb-8">
-              <div className="w-20 h-20 mx-auto mb-6 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md border border-white/30">
-                <Sparkles className="w-10 h-10" />
+              <style>
+                {`
+                  @keyframes float {
+                    0%, 100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
+                    50% { transform: translateY(-10px) scale(1.05); filter: drop-shadow(0 20px 25px rgba(0,0,0,0.2)); }
+                  }
+                  .animate-float-logo {
+                    animation: float 4s ease-in-out infinite;
+                  }
+                `}
+              </style>
+              <div className={`w-28 h-28 mx-auto mb-6 rounded-[2rem] flex items-center justify-center backdrop-blur-xl shadow-2xl transition-all duration-500 animate-float-logo overflow-hidden ${step === 0 ? 'bg-white/10 border-white/20' :
+                step === 1 ? 'bg-indigo-900/50 border-indigo-500/30 ring-1 ring-indigo-400/30' :
+                  'bg-blue-500/20 border-blue-400/30 ring-1 ring-blue-400/30'
+                }`}>
+                <img src="/logo.png" alt="Reclaim Logo" className="w-full h-full object-cover" />
               </div>
             </div>
             <h1 className="text-5xl font-bold mb-4 leading-tight">
@@ -66,28 +80,124 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       {step === 1 && (
         <div className="h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 text-white p-8 relative overflow-hidden animate-fade-in">
           {/* Visual: Endless Scroll → Focus */}
-          <div className="mb-12 relative">
-            <div className="flex items-center gap-6">
-              {/* Endless Scroll Visual */}
-              <div className="relative">
-                <div className="w-24 h-32 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20 overflow-hidden">
-                  <div className="absolute inset-0 animate-scroll-fade">
-                    {[...Array(8)].map((_, i) => (
-                      <div key={i} className="h-8 border-b border-white/10" />
+          {/* Visual: Endless Scroll → Focus */}
+          <div className="mb-12 relative w-full max-w-sm">
+            <style>
+              {`
+                @keyframes scroll-fast {
+                  0% { transform: translateY(0); }
+                  100% { transform: translateY(-50%); }
+                }
+                .animate-scroll-fast {
+                  animation: scroll-fast 2s linear infinite;
+                }
+                @keyframes pulse-red {
+                  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+                  50% { box-shadow: 0 0 20px 0 rgba(239, 68, 68, 0.7); }
+                }
+                @keyframes pulse-green {
+                  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+                  50% { box-shadow: 0 0 20px 0 rgba(16, 185, 129, 0.7); }
+                }
+              `}
+            </style>
+
+            <div className="flex items-center justify-center gap-6">
+              {/* Left: The Doom Scroll */}
+              <div className="relative group">
+                {/* Phone Frame */}
+                <div className="w-28 h-44 bg-slate-900 rounded-[1.5rem] border-4 border-slate-700 overflow-hidden relative shadow-2xl transition-all duration-300 group-hover:scale-105 group-hover:border-red-500/50" style={{ animation: 'pulse-red 2s infinite' }}>
+                  {/* Status Bar */}
+                  <div className="absolute top-0 w-full h-4 bg-slate-800 z-10 flex justify-center items-center gap-1">
+                    <div className="w-8 h-1 bg-slate-900 rounded-full"></div>
+                  </div>
+
+                  {/* Infinite Content Stream */}
+                  {/* Infinite Content Stream */}
+                  <div className="animate-scroll-fast w-full px-2 pt-2 space-y-2 opacity-80">
+                    {[
+                      'https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg',
+                      'https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg',
+                      'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg',
+                      'https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg',
+                      'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg',
+                      'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg'
+                    ].map((url, i) => (
+                      <div key={i} className="space-y-1">
+                        {/* Real App Logos */}
+                        <div className="w-full aspect-[4/5] rounded-lg bg-white/5 flex items-center justify-center p-3 relative overflow-hidden backdrop-blur-sm border border-white/5">
+                          <img src={url} alt="App" className="w-full h-full object-contain" />
+                        </div>
+                        <div className="h-2 w-2/3 bg-slate-700/50 rounded full" />
+                      </div>
+                    ))}
+                    {/* Duplicate for smooth loop */}
+                    {[
+                      'https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg',
+                      'https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg',
+                      'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg',
+                      'https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg',
+                      'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg',
+                      'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg'
+                    ].map((url, i) => (
+                      <div key={`d-${i}`} className="space-y-1">
+                        <div className="w-full aspect-[4/5] rounded-lg bg-white/5 flex items-center justify-center p-3 relative overflow-hidden backdrop-blur-sm border border-white/5">
+                          <img src={url} alt="App" className="w-full h-full object-contain" />
+                        </div>
+                        <div className="h-2 w-2/3 bg-slate-700/50 rounded full" />
+                      </div>
                     ))}
                   </div>
+
+                  {/* Drain Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-red-900/40 via-transparent to-transparent pointer-events-none" />
                 </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
-                  ∞
+
+                {/* Time Drain Badge */}
+                <div className="absolute -top-3 -right-3 w-8 h-8 bg-red-500 text-white rounded-full shadow-lg border-2 border-slate-900 flex items-center justify-center animate-bounce">
+                  <X className="w-5 h-5" />
                 </div>
               </div>
 
               {/* Arrow */}
-              <div className="text-4xl animate-slide-right">→</div>
+              <div className="text-4xl animate-pulse text-white/50">
+                👉
+              </div>
 
-              {/* Focus Visual */}
-              <div className="w-24 h-32 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center text-4xl shadow-lg animate-glow">
-                ✨
+              {/* Right: The Reclaim */}
+              <div className="relative group">
+                {/* Phone Frame */}
+                <div className="w-28 h-44 bg-slate-900 rounded-[1.5rem] border-4 border-slate-700 overflow-hidden relative shadow-2xl transition-all duration-300 group-hover:scale-105 group-hover:border-green-500/50" style={{ animation: 'pulse-green 3s infinite' }}>
+                  {/* Status Bar */}
+                  <div className="absolute top-0 w-full h-4 bg-slate-800 z-10 flex justify-center items-center gap-1">
+                    <div className="w-8 h-1 bg-slate-900 rounded-full"></div>
+                  </div>
+
+                  {/* Focus UI */}
+                  <div className="h-full w-full bg-slate-900 flex flex-col items-center justify-center p-3 relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-green-500/10 to-emerald-500/20" />
+
+                    {/* Glowing Shield/Battery */}
+                    <div className="relative z-10 mb-2">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/30">
+                        <Check className="w-7 h-7 text-white" />
+                      </div>
+                    </div>
+
+                    {/* "My Time" Text */}
+                    <div className="text-center z-10">
+                      <div className="h-1 w-12 bg-green-500/30 rounded-full mx-auto mb-1 overflow-hidden">
+                        <div className="h-full bg-green-400 animate-[width_2s_ease-in-out_infinite]" style={{ width: '100%' }}></div>
+                      </div>
+                      <span className="text-[10px] text-green-200 font-medium">Reclaimed</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Time Gain Badge */}
+                <div className="absolute -top-3 -right-3 w-8 h-8 bg-green-500 text-white rounded-full shadow-lg border-2 border-slate-900 flex items-center justify-center animate-bounce" style={{ animationDelay: '0.1s' }}>
+                  <Check className="w-5 h-5" />
+                </div>
               </div>
             </div>
           </div>
@@ -158,11 +268,10 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 <button
                   key={goal.id}
                   onClick={() => setSelectedGoal(goal.id)}
-                  className={`w-full p-5 rounded-3xl flex items-center gap-4 transition-all duration-300 ${
-                    selectedGoal === goal.id
-                      ? 'bg-white text-blue-600 shadow-2xl scale-105'
-                      : 'bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 hover:scale-102'
-                  }`}
+                  className={`w-full p-5 rounded-3xl flex items-center gap-4 transition-all duration-300 ${selectedGoal === goal.id
+                    ? 'bg-white text-blue-600 shadow-2xl scale-105'
+                    : 'bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 hover:scale-102'
+                    }`}
                 >
                   <div className={`w-14 h-14 bg-gradient-to-br ${goal.gradient} rounded-2xl flex items-center justify-center text-3xl shadow-lg`}>
                     {goal.icon}

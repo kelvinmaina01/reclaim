@@ -24,7 +24,7 @@ const apps: AppLimit[] = [
   {
     id: 'instagram',
     name: 'Instagram Reels',
-    icon: '📸',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg',
     category: 'Short-form',
     currentLimit: 15,
     todayUsage: 24,
@@ -35,18 +35,18 @@ const apps: AppLimit[] = [
   {
     id: 'tiktok',
     name: 'TikTok',
-    icon: '🎵',
+    icon: 'https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg',
     category: 'Short-form',
     currentLimit: 20,
     todayUsage: 8,
     enabled: true,
     aiSuggested: 15,
-    riskLevel: 'low',
+    riskLevel: 'medium',
   },
   {
     id: 'youtube',
     name: 'YouTube Shorts',
-    icon: '▶️',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg',
     category: 'Short-form',
     currentLimit: 30,
     todayUsage: 12,
@@ -56,13 +56,133 @@ const apps: AppLimit[] = [
   {
     id: 'snapchat',
     name: 'Snapchat',
-    icon: '👻',
+    icon: 'https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg',
     category: 'Social',
     currentLimit: 25,
     todayUsage: 18,
     enabled: false,
     riskLevel: 'medium',
   },
+  {
+    id: 'threads',
+    name: 'Threads',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Threads_%28app%29_logo.svg',
+    category: 'Social',
+    currentLimit: 30,
+    todayUsage: 5,
+    enabled: false,
+    riskLevel: 'low',
+  },
+  {
+    id: 'twitter',
+    name: 'X (Twitter)',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg',
+    category: 'Social',
+    currentLimit: 45,
+    todayUsage: 30,
+    enabled: true,
+    riskLevel: 'high',
+  },
+  {
+    id: 'facebook',
+    name: 'Facebook',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg',
+    category: 'Social',
+    currentLimit: 30,
+    todayUsage: 10,
+    enabled: false,
+    riskLevel: 'low',
+  },
+  {
+    id: 'messenger',
+    name: 'Messenger',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/b/be/Facebook_Messenger_logo_2020.svg',
+    category: 'Communication',
+    currentLimit: 60,
+    todayUsage: 15,
+    enabled: false,
+    riskLevel: 'low',
+  },
+  {
+    id: 'whatsapp',
+    name: 'WhatsApp',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg',
+    category: 'Communication',
+    currentLimit: 60,
+    todayUsage: 45,
+    enabled: true,
+    riskLevel: 'medium',
+  },
+  {
+    id: 'telegram',
+    name: 'Telegram',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg',
+    category: 'Communication',
+    currentLimit: 30,
+    todayUsage: 0,
+    enabled: false,
+    riskLevel: 'low',
+  },
+  {
+    id: 'discord',
+    name: 'Discord',
+    icon: 'https://upload.wikimedia.org/wikipedia/en/9/98/Discord_logo.svg',
+    category: 'Social',
+    currentLimit: 120,
+    todayUsage: 60,
+    enabled: true,
+    riskLevel: 'medium',
+  },
+  {
+    id: 'reddit',
+    name: 'Reddit',
+    icon: 'https://upload.wikimedia.org/wikipedia/en/b/bd/Reddit_Logo_Icon.svg',
+    category: 'Social',
+    currentLimit: 45,
+    todayUsage: 20,
+    enabled: true,
+    riskLevel: 'medium',
+  },
+  {
+    id: 'linkedin',
+    name: 'LinkedIn',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png',
+    category: 'Social',
+    currentLimit: 15,
+    todayUsage: 5,
+    enabled: false,
+    riskLevel: 'low',
+  },
+  {
+    id: 'pinterest',
+    name: 'Pinterest',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png',
+    category: 'Social',
+    currentLimit: 30,
+    todayUsage: 0,
+    enabled: false,
+    riskLevel: 'low',
+  },
+  {
+    id: 'bereal',
+    name: 'BeReal',
+    icon: 'https://upload.wikimedia.org/wikipedia/en/4/40/BeReal_logo.png',
+    category: 'Social',
+    currentLimit: 10,
+    todayUsage: 2,
+    enabled: false,
+    riskLevel: 'low',
+  },
+  {
+    id: 'tumblr',
+    name: 'Tumblr',
+    icon: 'https://upload.wikimedia.org/wikipedia/commons/4/43/Tumblr_logotype_2018.svg',
+    category: 'Social',
+    currentLimit: 30,
+    todayUsage: 0,
+    enabled: false,
+    riskLevel: 'low',
+  }
 ];
 
 export function AppLimits({ data, onBack }: AppLimitsProps) {
@@ -115,8 +235,12 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
             Back
           </button>
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center backdrop-blur-sm text-4xl">
-              {selectedAppData.icon}
+            <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg border border-white/20 p-3 overflow-hidden">
+              {selectedAppData.icon.startsWith('http') ? (
+                <img src={selectedAppData.icon} alt={selectedAppData.name} className="w-full h-full object-contain" />
+              ) : (
+                <span className="text-4xl">{selectedAppData.icon}</span>
+              )}
             </div>
             <div>
               <h1 className="text-2xl font-bold">{selectedAppData.name}</h1>
@@ -127,11 +251,10 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
 
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {/* Today's Usage */}
-          <div className={`rounded-2xl p-5 shadow-sm border mb-4 ${
-            isOverLimit 
-              ? 'bg-gradient-to-br from-red-50 to-pink-50 border-red-200' 
-              : 'bg-white border-gray-100'
-          }`}>
+          <div className={`rounded-2xl p-5 shadow-sm border mb-4 ${isOverLimit
+            ? 'bg-gradient-to-br from-red-50 to-pink-50 border-red-200'
+            : 'bg-white border-gray-100'
+            }`}>
             <div className="flex items-center justify-between mb-3">
               <div className="text-sm text-gray-600">Today's Usage</div>
               {isOverLimit && (
@@ -146,11 +269,10 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  isOverLimit
-                    ? 'bg-gradient-to-r from-red-500 to-pink-500'
-                    : 'bg-gradient-to-r from-blue-500 to-indigo-500'
-                }`}
+                className={`h-full rounded-full transition-all duration-500 ${isOverLimit
+                  ? 'bg-gradient-to-r from-red-500 to-pink-500'
+                  : 'bg-gradient-to-r from-blue-500 to-indigo-500'
+                  }`}
                 style={{
                   width: `${Math.min(usagePercentage, 100)}%`,
                 }}
@@ -169,7 +291,7 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
               <div className="text-sm font-semibold text-gray-700">Daily Limit</div>
               <div className="text-3xl font-bold text-blue-600">{selectedAppData.currentLimit} min</div>
             </div>
-            
+
             {/* Slider */}
             <input
               type="range"
@@ -180,7 +302,7 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
               onChange={(e) => updateLimit(selectedAppData.id, parseInt(e.target.value))}
               className="w-full h-3 bg-gray-200 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:cursor-pointer"
             />
-            
+
             <div className="flex justify-between text-xs text-gray-500 mt-2">
               <span>5 min</span>
               <span>30 min</span>
@@ -193,11 +315,10 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
                 <button
                   key={minutes}
                   onClick={() => updateLimit(selectedAppData.id, minutes)}
-                  className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
-                    selectedAppData.currentLimit === minutes
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${selectedAppData.currentLimit === minutes
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                 >
                   {minutes}m
                 </button>
@@ -294,8 +415,12 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
                 className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100"
               >
                 <div className="flex items-center gap-4 mb-3">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center text-3xl">
-                    {app.icon}
+                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-gray-100 p-2 overflow-hidden">
+                    {app.icon.startsWith('http') ? (
+                      <img src={app.icon} alt={app.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="text-3xl">{app.icon}</span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-gray-800 flex items-center gap-2">
@@ -310,14 +435,12 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
                   </div>
                   <button
                     onClick={() => toggleApp(app.id)}
-                    className={`w-12 h-7 rounded-full transition-all duration-200 relative ${
-                      app.enabled ? 'bg-blue-600' : 'bg-gray-300'
-                    }`}
+                    className={`w-12 h-7 rounded-full transition-all duration-200 relative ${app.enabled ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
                   >
                     <div
-                      className={`w-5 h-5 bg-white rounded-full absolute top-1 transition-all duration-200 ${
-                        app.enabled ? 'right-1' : 'left-1'
-                      }`}
+                      className={`w-5 h-5 bg-white rounded-full absolute top-1 transition-all duration-200 ${app.enabled ? 'right-1' : 'left-1'
+                        }`}
                     />
                   </button>
                 </div>
@@ -337,13 +460,12 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
                     </div>
                     <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden mb-2">
                       <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          isOverLimit
-                            ? 'bg-gradient-to-r from-red-500 to-pink-500'
-                            : isNearLimit
+                        className={`h-full rounded-full transition-all duration-500 ${isOverLimit
+                          ? 'bg-gradient-to-r from-red-500 to-pink-500'
+                          : isNearLimit
                             ? 'bg-gradient-to-r from-amber-400 to-orange-500'
                             : 'bg-gradient-to-r from-blue-500 to-indigo-500'
-                        }`}
+                          }`}
                         style={{
                           width: `${Math.min(usagePercentage, 100)}%`,
                         }}
