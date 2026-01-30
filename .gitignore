@@ -33,3 +33,6 @@ supabase/functions/*/deno.lock
 *.njsproj
 *.sln
 *.sw?
+
+# Supabase secrets/config
+backend/supabase/config.toml
