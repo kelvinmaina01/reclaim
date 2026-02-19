@@ -119,6 +119,13 @@ class DataSyncService {
      * Sync user profile from Supabase
      */
     async syncProfile(userId: string): Promise<Profile | null> {
+        return this.fetchProfile(userId);
+    }
+
+    /**
+     * Alias for syncProfile used by App.tsx
+     */
+    async fetchProfile(userId: string): Promise<Profile | null> {
         try {
             const { data, error } = await supabase
                 .from('profiles')
@@ -126,11 +133,35 @@ class DataSyncService {
                 .eq('id', userId)
                 .single();
 
+            if (error) {
+                if (error.code === 'PGRST116') return null; // Profile doesn't exist yet
+                throw error;
+            }
+
+            return data;
+        } catch (error) {
+            throw handleSupabaseError(error, 'fetchProfile');
+        }
+    }
+
+    /**
+     * Batch fetcher for native app to get limits and usage in one call
+     */
+    async getNativeSyncData(userId: string): Promise<{
+        limits: any[];
+        usage: any[];
+        serverTime: string;
+    }> {
+        try {
+            const { data, error } = await supabase.rpc('get_native_sync_data', {
+                user_uuid: userId
+            });
+
             if (error) throw error;
 
             return data;
         } catch (error) {
-            throw handleSupabaseError(error, 'syncProfile');
+            throw handleSupabaseError(error, 'getNativeSyncData');
         }
     }
 
