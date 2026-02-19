@@ -63,21 +63,16 @@ export function AIInsights({ data }: AIInsightsProps) {
 
   if (selectedInsight && selectedCard) {
     return (
-      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
-        {/* Header */}
-        <div className="px-6 pt-8 pb-6 bg-gradient-to-br from-purple-600 to-indigo-600 text-white">
+      <div className="flex flex-col">
+        {/* Insight Detail */}
+        <div className="space-y-6">
           <button
             onClick={() => setSelectedInsight(null)}
-            className="text-white/80 hover:text-white mb-4 flex items-center gap-2"
+            className="flex items-center gap-2 text-blue-600 font-bold text-sm uppercase tracking-wider mb-2"
           >
-            <ChevronRight className="w-5 h-5 rotate-180" />
-            Back
+            <ChevronRight className="w-4 h-4 rotate-180" />
+            Back to Overview
           </button>
-          <h1 className="text-2xl font-bold">Insight Details</h1>
-        </div>
-
-        {/* Insight Detail */}
-        <div className="flex-1 overflow-y-auto px-6 py-6">
           <div className={`bg-gradient-to-br ${selectedCard.color} rounded-3xl p-6 text-white mb-6`}>
             <selectedCard.icon className="w-12 h-12 mb-4" />
             <h2 className="text-2xl font-bold mb-2">{selectedCard.title}</h2>
@@ -131,17 +126,7 @@ export function AIInsights({ data }: AIInsightsProps) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <div className="px-6 pt-8 pb-6 bg-gradient-to-br from-purple-600 to-indigo-600 text-white rounded-b-[2rem]">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-            <Brain className="w-5 h-5" />
-          </div>
-          <h1 className="text-2xl font-bold">AI Insights</h1>
-        </div>
-        <p className="text-purple-100">Personalized patterns & predictions</p>
-      </div>
+    <div className="flex flex-col space-y-6">
 
       {!data.aiEnabled ? (
         <div className="flex-1 flex items-center justify-center px-6">

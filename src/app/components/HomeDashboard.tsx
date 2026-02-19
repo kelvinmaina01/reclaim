@@ -9,76 +9,46 @@ interface HomeDashboardProps {
   onBlockTriggered: (app: string, minutes: number) => void;
 }
 
-export function HomeDashboard({ data, user, onNavigate, onBlockTriggered }: HomeDashboardProps) {
+export function HomeHeader({ data }: { data: AppData }) {
   const progressPercentage = Math.min((data.dailyReclaimedMinutes / 60) * 100, 100);
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <div className="px-6 pt-8 pb-6 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-b-[2rem]">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <p className="text-blue-100 text-sm">Good morning</p>
-            <h1 className="text-2xl font-bold">Your Progress</h1>
-          </div>
-          <div className="flex gap-3">
-            <button
-              onClick={() => onNavigate('notifications')}
-              className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-colors relative"
-            >
-              <Bell className="w-5 h-5" />
-              <div className="absolute top-2 right-2.5 w-2 h-2 bg-red-400 rounded-full border border-white/20" />
-            </button>
-            <button
-              onClick={() => onNavigate('limits')}
-              className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-colors"
-            >
-              <Settings className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Main Progress Circle */}
-        <div className="flex flex-col items-center py-8">
-          <div className="relative">
-            <svg className="w-48 h-48 transform -rotate-90">
-              <circle
-                cx="96"
-                cy="96"
-                r="88"
-                stroke="currentColor"
-                strokeWidth="8"
-                fill="none"
-                className="text-white/20"
-              />
-              <circle
-                cx="96"
-                cy="96"
-                r="88"
-                stroke="currentColor"
-                strokeWidth="8"
-                fill="none"
-                strokeDasharray={`${2 * Math.PI * 88}`}
-                strokeDashoffset={`${2 * Math.PI * 88 * (1 - progressPercentage / 100)}`}
-                className="text-white transition-all duration-1000 ease-out"
-                strokeLinecap="round"
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-5xl font-bold">{data.dailyReclaimedMinutes}</div>
-              <div className="text-sm text-blue-100">minutes reclaimed</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Streak */}
-        <div className="flex items-center justify-center gap-2 mt-4">
-          <div className="flex items-center gap-1 bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
-            <span className="text-xl">🔥</span>
-            <span className="font-semibold">{data.focusStreak} day streak</span>
+    <div className="flex flex-col items-center">
+      {/* Main Progress Circle */}
+      <div className="flex flex-col items-center py-4">
+        <div className="relative">
+          <svg className="w-48 h-48 transform -rotate-90">
+            <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="8" fill="none" className="text-white/20" />
+            <circle
+              cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="8" fill="none"
+              strokeDasharray={`${2 * Math.PI * 88}`}
+              strokeDashoffset={`${2 * Math.PI * 88 * (1 - progressPercentage / 100)}`}
+              className="text-white transition-all duration-1000 ease-out"
+              strokeLinecap="round"
+            />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="text-5xl font-bold">{data.dailyReclaimedMinutes}</div>
+            <div className="text-sm text-blue-100">minutes reclaimed</div>
           </div>
         </div>
       </div>
+
+      {/* Streak */}
+      <div className="flex items-center justify-center gap-2 mt-2">
+        <div className="flex items-center gap-1 bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
+          <span className="text-xl">🔥</span>
+          <span className="font-semibold">{data.focusStreak} day streak</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function HomeDashboard({ data, user, onNavigate, onBlockTriggered }: HomeDashboardProps) {
+
+  return (
+    <div className="h-full flex flex-col">
 
       {/* Motivational Message */}
       <div className="px-6 py-6">

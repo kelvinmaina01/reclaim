@@ -83,35 +83,7 @@ export function Notifications({ onBack }: NotificationsProps) {
     };
 
     return (
-        <div className="h-full flex flex-col bg-slate-50">
-            {/* Header */}
-            <div className="px-6 pt-8 pb-6 bg-white shadow-sm z-10">
-                <div className="flex items-center justify-between mb-4">
-                    <button
-                        onClick={onBack}
-                        className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center hover:bg-slate-200 transition-colors"
-                    >
-                        <ChevronLeft className="w-5 h-5 text-slate-600" />
-                    </button>
-                    <div className="flex gap-2">
-                        <button
-                            onClick={markAllRead}
-                            className="text-xs font-semibold text-blue-600 hover:text-blue-700 px-3 py-1.5 bg-blue-50 rounded-lg"
-                        >
-                            Mark all read
-                        </button>
-                    </div>
-                </div>
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-slate-800">Notifications</h1>
-                    <div className="relative">
-                        <Bell className="w-6 h-6 text-slate-400" />
-                        {notifications.some(n => !n.read) && (
-                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white" />
-                        )}
-                    </div>
-                </div>
-            </div>
+        <div className="flex flex-col space-y-6">
 
             {/* Permission Banner */}
             {!enabled && (
@@ -149,8 +121,8 @@ export function Notifications({ onBack }: NotificationsProps) {
                                     }`}
                             >
                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${item.type === 'streak' ? 'bg-orange-100 text-orange-600' :
-                                        item.type === 'limit' ? 'bg-red-100 text-red-600' :
-                                            'bg-blue-100 text-blue-600'
+                                    item.type === 'limit' ? 'bg-red-100 text-red-600' :
+                                        'bg-blue-100 text-blue-600'
                                     }`}>
                                     {item.type === 'streak' && <Zap className="w-5 h-5" />}
                                     {item.type === 'limit' && <Shield className="w-5 h-5" />}

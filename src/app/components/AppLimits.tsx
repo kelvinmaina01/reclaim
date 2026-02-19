@@ -224,143 +224,137 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
     const isOverLimit = selectedAppData.todayUsage > selectedAppData.currentLimit;
 
     return (
-      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
-        {/* Header */}
-        <div className="px-6 pt-8 pb-6 bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
-          <button
-            onClick={() => setSelectedApp(null)}
-            className="text-white/80 hover:text-white mb-4 flex items-center gap-2"
-          >
-            <ChevronLeft className="w-5 h-5" />
-            Back
-          </button>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg border border-white/20 p-3 overflow-hidden">
-              {selectedAppData.icon.startsWith('http') ? (
-                <img src={selectedAppData.icon} alt={selectedAppData.name} className="w-full h-full object-contain" />
-              ) : (
-                <span className="text-4xl">{selectedAppData.icon}</span>
-              )}
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">{selectedAppData.name}</h1>
-              <p className="text-blue-100">{selectedAppData.category}</p>
-            </div>
+      <div className="flex flex-col">
+        <button
+          onClick={() => setSelectedApp(null)}
+          className="flex items-center gap-2 text-blue-600 font-bold text-sm uppercase tracking-wider mb-6"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Back to Limits
+        </button>
+        <div className="flex items-center gap-4 mb-6 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center shadow-lg border border-slate-200 p-3 overflow-hidden">
+            {selectedAppData.icon.startsWith('http') ? (
+              <img src={selectedAppData.icon} alt={selectedAppData.name} className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-4xl">{selectedAppData.icon}</span>
+            )}
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">{selectedAppData.name}</h1>
+            <p className="text-slate-500">{selectedAppData.category}</p>
+          </div>
+        </div>
+        {/* Today's Usage */}
+        <div className={`rounded-2xl p-5 shadow-sm border mb-4 ${isOverLimit
+          ? 'bg-gradient-to-br from-red-50 to-pink-50 border-red-200'
+          : 'bg-white border-gray-100'
+          }`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-sm text-gray-600">Today's Usage</div>
+            {isOverLimit && (
+              <div className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
+                Over limit
+              </div>
+            )}
+          </div>
+          <div className="flex items-end gap-2 mb-3">
+            <span className="text-5xl font-bold text-gray-800">{selectedAppData.todayUsage}</span>
+            <span className="text-xl text-gray-500 mb-2">/ {selectedAppData.currentLimit} min</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${isOverLimit
+                ? 'bg-gradient-to-r from-red-500 to-pink-500'
+                : 'bg-gradient-to-r from-blue-500 to-indigo-500'
+                }`}
+              style={{
+                width: `${Math.min(usagePercentage, 100)}%`,
+              }}
+            />
+          </div>
+          {isOverLimit && (
+            <p className="text-sm text-red-600 mt-3">
+              You've exceeded your limit by {selectedAppData.todayUsage - selectedAppData.currentLimit} minutes
+            </p>
+          )}
+        </div>
+
+        {/* Slider Control */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-sm font-semibold text-gray-700">Daily Limit</div>
+            <div className="text-3xl font-bold text-blue-600">{selectedAppData.currentLimit} min</div>
+          </div>
+
+          {/* Slider */}
+          <input
+            type="range"
+            min="5"
+            max="60"
+            step="5"
+            value={selectedAppData.currentLimit}
+            onChange={(e) => updateLimit(selectedAppData.id, parseInt(e.target.value))}
+            className="w-full h-3 bg-gray-200 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:cursor-pointer"
+          />
+
+          <div className="flex justify-between text-xs text-gray-500 mt-2">
+            <span>5 min</span>
+            <span>30 min</span>
+            <span>60 min</span>
+          </div>
+
+          {/* Quick Presets */}
+          <div className="flex gap-2 mt-4">
+            {[5, 10, 15, 30, 60].map((minutes) => (
+              <button
+                key={minutes}
+                onClick={() => updateLimit(selectedAppData.id, minutes)}
+                className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${selectedAppData.currentLimit === minutes
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+              >
+                {minutes}m
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6">
-          {/* Today's Usage */}
-          <div className={`rounded-2xl p-5 shadow-sm border mb-4 ${isOverLimit
-            ? 'bg-gradient-to-br from-red-50 to-pink-50 border-red-200'
-            : 'bg-white border-gray-100'
-            }`}>
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-sm text-gray-600">Today's Usage</div>
-              {isOverLimit && (
-                <div className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
-                  Over limit
-                </div>
-              )}
-            </div>
-            <div className="flex items-end gap-2 mb-3">
-              <span className="text-5xl font-bold text-gray-800">{selectedAppData.todayUsage}</span>
-              <span className="text-xl text-gray-500 mb-2">/ {selectedAppData.currentLimit} min</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${isOverLimit
-                  ? 'bg-gradient-to-r from-red-500 to-pink-500'
-                  : 'bg-gradient-to-r from-blue-500 to-indigo-500'
-                  }`}
-                style={{
-                  width: `${Math.min(usagePercentage, 100)}%`,
-                }}
-              />
-            </div>
-            {isOverLimit && (
-              <p className="text-sm text-red-600 mt-3">
-                You've exceeded your limit by {selectedAppData.todayUsage - selectedAppData.currentLimit} minutes
-              </p>
-            )}
-          </div>
-
-          {/* Slider Control */}
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-sm font-semibold text-gray-700">Daily Limit</div>
-              <div className="text-3xl font-bold text-blue-600">{selectedAppData.currentLimit} min</div>
-            </div>
-
-            {/* Slider */}
-            <input
-              type="range"
-              min="5"
-              max="60"
-              step="5"
-              value={selectedAppData.currentLimit}
-              onChange={(e) => updateLimit(selectedAppData.id, parseInt(e.target.value))}
-              className="w-full h-3 bg-gray-200 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:cursor-pointer"
-            />
-
-            <div className="flex justify-between text-xs text-gray-500 mt-2">
-              <span>5 min</span>
-              <span>30 min</span>
-              <span>60 min</span>
-            </div>
-
-            {/* Quick Presets */}
-            <div className="flex gap-2 mt-4">
-              {[5, 10, 15, 30, 60].map((minutes) => (
-                <button
-                  key={minutes}
-                  onClick={() => updateLimit(selectedAppData.id, minutes)}
-                  className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${selectedAppData.currentLimit === minutes
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                >
-                  {minutes}m
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* AI Suggestion */}
-          {selectedAppData.aiSuggested && (
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-5 border border-purple-100 mb-4">
-              <div className="flex items-start gap-3 mb-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Brain className="w-5 h-5 text-purple-600" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-800 mb-2">AI Recommendation</h3>
-                  <p className="text-sm text-gray-600 mb-3">
-                    Based on your usage patterns, we suggest limiting this app to{' '}
-                    <span className="font-semibold text-purple-700">{selectedAppData.aiSuggested} minutes</span> daily.
-                    This matches your most productive days.
-                  </p>
-                  <button
-                    onClick={() => applyAISuggestion(selectedAppData.id)}
-                    className="text-sm text-purple-600 font-semibold hover:underline flex items-center gap-1"
-                  >
-                    Apply suggestion <TrendingUp className="w-4 h-4" />
-                  </button>
-                </div>
+        {/* AI Suggestion */}
+        {selectedAppData.aiSuggested && (
+          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-5 border border-purple-100 mb-4">
+            <div className="flex items-start gap-3 mb-3">
+              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <Brain className="w-5 h-5 text-purple-600" />
               </div>
-            </div>
-          )}
-
-          {/* Emergency Override Info */}
-          <div className="bg-amber-50 rounded-2xl p-5 border border-amber-100">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-800 mb-1">Flexible Override</h3>
-                <p className="text-sm text-gray-600">
-                  You can always unlock with an 8-second breathing pause. This helps you make intentional choices.
+                <h3 className="font-semibold text-gray-800 mb-2">AI Recommendation</h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  Based on your usage patterns, we suggest limiting this app to{' '}
+                  <span className="font-semibold text-purple-700">{selectedAppData.aiSuggested} minutes</span> daily.
+                  This matches your most productive days.
                 </p>
+                <button
+                  onClick={() => applyAISuggestion(selectedAppData.id)}
+                  className="text-sm text-purple-600 font-semibold hover:underline flex items-center gap-1"
+                >
+                  Apply suggestion <TrendingUp className="w-4 h-4" />
+                </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Emergency Override Info */}
+        <div className="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-gray-800 mb-1">Flexible Override</h3>
+              <p className="text-sm text-gray-600">
+                You can always unlock with an 8-second breathing pause. This helps you make intentional choices.
+              </p>
             </div>
           </div>
         </div>
@@ -371,19 +365,7 @@ export function AppLimits({ data, onBack }: AppLimitsProps) {
   const totalDailyLimit = appLimits.filter(app => app.enabled).reduce((sum, app) => sum + app.currentLimit, 0);
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <div className="px-6 pt-8 pb-6 bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
-        <button
-          onClick={onBack}
-          className="text-white/80 hover:text-white mb-4 flex items-center gap-2"
-        >
-          <ChevronLeft className="w-5 h-5" />
-          Back
-        </button>
-        <h1 className="text-2xl font-bold mb-2">App Limits</h1>
-        <p className="text-blue-100">Choose how you spend your time</p>
-      </div>
+    <div className="flex flex-col space-y-6">
 
       {/* Category Summary */}
       <div className="px-6 py-4">
