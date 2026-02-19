@@ -71,7 +71,7 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
                     <div className="w-20 h-20 mx-auto mb-6 bg-white/10 backdrop-blur-xl rounded-[1.5rem] border border-white/20 flex items-center justify-center shadow-2xl animate-breathe">
                         <img src="/logo.png" alt="Reclaim Logo" className="w-14 h-14 object-contain" />
                     </div>
-                    <h1 className="text-4xl font-black mb-2 tracking-tight">RECLAIM</h1>
+                    <h1 className="text-4xl font-black mb-2 tracking-tight">Reclaim</h1>
                     <p className="text-blue-100/80 font-medium text-sm uppercase tracking-[0.2em]">Master Your Time</p>
                 </div>
 
