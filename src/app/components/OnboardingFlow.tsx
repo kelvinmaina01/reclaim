@@ -42,18 +42,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           {/* Content */}
           <div className="relative z-10 text-center">
             <div className="mb-8">
-              <style>
-                {`
-                  @keyframes float {
-                    0%, 100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
-                    50% { transform: translateY(-10px) scale(1.05); filter: drop-shadow(0 20px 25px rgba(0,0,0,0.2)); }
-                  }
-                  .animate-float-logo {
-                    animation: float 4s ease-in-out infinite;
-                  }
-                `}
-              </style>
-              <div className={`w-28 h-28 mx-auto mb-6 rounded-[2rem] flex items-center justify-center backdrop-blur-xl shadow-2xl transition-all duration-500 animate-float-logo overflow-hidden ${step === 0 ? 'bg-white/10 border-white/20' :
+              <div className={`w-28 h-28 mx-auto mb-6 rounded-[2rem] flex items-center justify-center backdrop-blur-xl shadow-2xl transition-all duration-700 hover:scale-105 overflow-hidden ${step === 0 ? 'bg-white/10 border-white/20' :
                 step === 1 ? 'bg-indigo-900/50 border-indigo-500/30 ring-1 ring-indigo-400/30' :
                   'bg-blue-500/20 border-blue-400/30 ring-1 ring-blue-400/30'
                 }`}>

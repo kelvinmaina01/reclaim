@@ -68,7 +68,7 @@ export function AuthScreen({ onSuccess }: AuthScreenProps) {
                 <div className="absolute bottom-10 right-10 w-64 h-64 bg-indigo-300/20 rounded-full blur-3xl animate-float-delayed" />
 
                 <div className="relative z-10 text-center animate-fade-in">
-                    <div className="w-20 h-20 mx-auto mb-6 bg-white/10 backdrop-blur-xl rounded-[1.5rem] border border-white/20 flex items-center justify-center shadow-2xl animate-breathe">
+                    <div className="w-20 h-20 mx-auto mb-6 bg-white/10 backdrop-blur-xl rounded-[1.5rem] border border-white/20 flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-500">
                         <img src="/logo.png" alt="Reclaim Logo" className="w-14 h-14 object-contain" />
                     </div>
                     <h1 className="text-4xl font-black mb-2 tracking-tight">Reclaim</h1>
